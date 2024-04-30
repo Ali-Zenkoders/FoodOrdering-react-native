@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, Image, Pressable } from "react-native";
 
 import Colors from "@/src/constants/Colors";
 import { Product } from "../types";
+import { Link } from "expo-router";
 
 export const defaultPizzaImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
@@ -12,15 +13,19 @@ type ProductLIstItemProps = {
 
 const ProductListItem = ({ product }: ProductLIstItemProps) => {
   return (
-    // view is just like div in web
-    <View style={styles.container}>
-      <Image
-        source={{ uri: product.image || defaultPizzaImage }}
-        style={styles.image}
-      />
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.price}>${product.price}</Text>
-    </View>
+    // View is just like div in web but View does not support press event unlike Pressable
+    <Link href={`/menu/${product.id}`} asChild>
+      <Pressable style={styles.container}>
+        <Image
+          source={{ uri: product.image || defaultPizzaImage }}
+          style={styles.image}
+          // image modes
+          resizeMode="contain"
+        />
+        <Text style={styles.title}>{product.name}</Text>
+        <Text style={styles.price}>${product.price}</Text>
+      </Pressable>
+    </Link>
   );
 };
 
@@ -31,6 +36,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 20,
+    flex: 1,
+    justifyContent: "space-between",
+    maxWidth: "50%",
   },
   title: {
     fontSize: 20,
