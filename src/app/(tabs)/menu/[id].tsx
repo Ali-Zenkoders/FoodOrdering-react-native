@@ -3,16 +3,22 @@ import React, { useState } from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
 import products from "@/assets/data/products";
 import Button from "@/src/components/Button";
+import { PizzaSize } from "@/src/types";
+import { useCart } from "@/src/providers/CartProvider";
 
 const sizes = ["S", "M", "L", "XL"];
 
 const ProductDetailsScreen = () => {
   const { id } = useLocalSearchParams();
-  const [selectedSize, setSelectedSize] = useState("M");
+  const { addItem } = useCart();
+
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
   const product = products.find((p) => p.id.toString() === id);
 
   const handleCart = () => {
-    console.warn("Adding to card: selected size: ", selectedSize);
+    if (!product) return;
+    addItem(product, selectedSize);
+    // console.warn("Adding to card: selected size: ", selectedSize);
   };
 
   if (!product) {
@@ -33,7 +39,7 @@ const ProductDetailsScreen = () => {
         {sizes.map((item, index) => (
           <Pressable
             key={index}
-            onPress={() => setSelectedSize(item)}
+            onPress={() => setSelectedSize(item as PizzaSize)}
             style={[
               styles.size,
               {
